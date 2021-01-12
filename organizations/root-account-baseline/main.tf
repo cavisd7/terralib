@@ -47,11 +47,12 @@ module "admin_group" {
 }
 
 /* Create admin users and add to admin group */
-module "root_users" {
+/* TODO: test! */
+/*module "root_users" {
     count                   = length(var.admin_users)
     source                  = "./modules/root-admin-user"
 
     name                    = var.admin_users[count.index].name
     pgp_key                 = var.admin_users[count.index].pgp_key
     admin_group_name        = module.admin_group.*.admin_group_name
-}
+}*/
