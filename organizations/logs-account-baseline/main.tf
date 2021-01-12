@@ -1,7 +1,7 @@
 /* Turn on CloudTrail in logs account */
 resource "aws_cloudtrail" "log-acc-trail" {
     name                    = "log-acc-trail"
-    s3_bucket_name          = var.org_trail_bucket_name
+    s3_bucket_name          = var.org_trail_bucket_id
 }
 
 /* Allow users kept in the security & identity account to assume roles in the logs account */

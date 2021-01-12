@@ -1,4 +1,4 @@
-variable "org_trail_bucket_name" {
+variable "org_trail_bucket_id" {
     type = string
 }
 

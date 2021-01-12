@@ -2,7 +2,7 @@
 provider "aws" {
     region                  = "us-east-2"
     profile                 = "default"
-    shared_credentials_file = "/home/kc787/.aws/credentials"
+    shared_credentials_file = "~/.aws/credentials"
     assume_role {
         role_arn            = "arn:aws:iam::${var.log_acc_id}:role/OrganizationAccountAccessRole"
         session_name        = "Terraform_Access_For_Log_Account_Provisions"
