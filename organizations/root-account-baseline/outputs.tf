@@ -15,6 +15,6 @@ output "sec_acc_id" {
     value = data.aws_organizations_organization.org_accounts.non_master_accounts[index(data.aws_organizations_organization.org_accounts.non_master_accounts.*.name, "sec")].id
 }
 
-output "admin_encrypted_passwords" {
+/*output "admin_encrypted_passwords" {
     value = module.root_users.*.admin_encrypted_password
-}
+}*/
