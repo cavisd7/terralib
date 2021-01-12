@@ -20,3 +20,13 @@ variable "users" {
         pgp_key         = string 
     }))
 }
+
+variable "enable_cross_account_cloudwatch_monitoring" {
+    type    = bool
+    default = false
+}
+
+/* Typically logs account */
+variable "monitoring_acc_id" {
+    type = string
+}

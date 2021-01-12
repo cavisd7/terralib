@@ -8,3 +8,10 @@ variable "child_accounts" {
 variable "org_trail_bucket_name" {
     type = string
 }
+
+variable "admin_users" {
+    type = list(object({
+        name            = string
+        pgp_key         = string 
+    }))
+}

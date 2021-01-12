@@ -38,4 +38,20 @@ resource "aws_cloudtrail" "root_trail" {
     s3_bucket_name          = module.org_trail.org_trail_bucket_id
 }
 
-/* TODO: Create users and groups in root account */
+/* Create a group for admins on the root account. Caution: These users will have AdministratorAccess on the root account. 
+ * Regular users will be created in the security & identity account.
+ */
+module "admin-group" {
+    count                   = length(var.admin_users) > 0 ? 1 : 0
+    source                  = "./modules/root-admin-group"
+}
+
+/* Create admin users and add to admin group */
+module "root_users" {
+    count                   = length(var.admin_users)
+    source                  = "./modules/root-account-iam"
+
+    name                    = var.admin_users[count.index].name
+    pgp_key                 = var.admin_users[count.index].pgp_key
+    admin_group_name        = module.admin-group.admin_group_name
+}

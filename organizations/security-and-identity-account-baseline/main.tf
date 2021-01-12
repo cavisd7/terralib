@@ -22,3 +22,10 @@ resource "aws_cloudtrail" "sec_trail" {
     name                    = "sec-trail"
     s3_bucket_name          = var.org_trail_bucket_id
 }
+
+module "enable_cloudwatch_monitoring" {
+    count                   = var.enable_cross_account_cloudwatch_monitoring ? 1 : 0
+    source                  = "../centralized-cloudwatch-dashboard"
+
+    monitoring_acc_id       = var.monitoring_acc_id
+}
