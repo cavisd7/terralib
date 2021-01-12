@@ -41,7 +41,7 @@ resource "aws_cloudtrail" "root_trail" {
 /* Create a group for admins on the root account. Caution: These users will have AdministratorAccess on the root account. 
  * Regular users will be created in the security & identity account.
  */
-module "admin-group" {
+module "admin_group" {
     count                   = length(var.admin_users) > 0 ? 1 : 0
     source                  = "./modules/root-admin-group"
 }
@@ -53,5 +53,5 @@ module "root_users" {
 
     name                    = var.admin_users[count.index].name
     pgp_key                 = var.admin_users[count.index].pgp_key
-    admin_group_name        = module.admin-group.admin_group_name
+    admin_group_name        = module.admin_group.*.admin_group_name
 }
