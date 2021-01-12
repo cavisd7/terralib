@@ -14,4 +14,5 @@ variable "admin_users" {
         name            = string
         pgp_key         = string 
     }))
+    default = []
 }

@@ -49,7 +49,7 @@ module "admin-group" {
 /* Create admin users and add to admin group */
 module "root_users" {
     count                   = length(var.admin_users)
-    source                  = "./modules/root-account-iam"
+    source                  = "./modules/root-admin-user"
 
     name                    = var.admin_users[count.index].name
     pgp_key                 = var.admin_users[count.index].pgp_key

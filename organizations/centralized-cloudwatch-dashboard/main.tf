@@ -25,7 +25,7 @@ resource "aws_iam_role" "cloudwatch_role" {
 
 module "cloudwatch_attach_permissions_policies" {
     count               = length(var.permissions_policies)
-    source              = "../attach-permissions-policies"
+    source              = "./modules/attach-permissions-policies"
 
     role_name           = aws_iam_role.cloudwatch_role.name
     policy_name         = var.permissions_policies[count.index]
