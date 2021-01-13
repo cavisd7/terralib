@@ -16,3 +16,9 @@ variable "admin_users" {
     }))
     default = []
 }
+
+/* Set to true if not already in an organization */
+variable "should_create_organization" {
+    type    = bool
+    default = false
+}

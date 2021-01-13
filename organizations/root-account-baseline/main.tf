@@ -1,5 +1,7 @@
 /* Create Organization */
 resource "aws_organizations_organization" "org" {
+    count                   = var.should_create_organization ? 1 : 0
+
     feature_set             = "ALL"
 
     aws_service_access_principals = [
