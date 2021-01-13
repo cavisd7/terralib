@@ -5,6 +5,7 @@ resource "aws_cloudtrail" "log-acc-trail" {
 }
 
 /* Allow users kept in the security & identity account to assume roles in the logs account */
+/* TODO: make into separate module*/
 data "aws_iam_policy_document" "cross_account_role_policy" {
     version                 = "2012-10-17"
     statement {
