@@ -1,0 +1,1 @@
+Fetch the Access Key Id and Secret Access Key from Secrets Manager and save in a profile in ~/.aws/credentials after running the 00_Manual stage. 

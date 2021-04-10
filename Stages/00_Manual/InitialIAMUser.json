@@ -1,0 +1,155 @@
+{
+    "Parameters" : {
+        "MasterAccountAdminGroupName" : {
+            "Type" : "String",
+            "Default" : "MasterAdmins"
+        },
+        "MasterAccountAdminGroupPath" : {
+            "Type" : "String",
+            "Default" : ""
+        },
+        "MasterAccountAdminUserName" : {
+            "Type" : "String",
+            "Default" : "Admin01"
+        },
+        "MasterAccountAdminUserPath" : {
+            "Type" : "String",
+            "Default" : ""
+        },
+        "MasterAccountAdminUserAccessKeySerial" : {
+            "Type" : "Number",
+            "Default" : 1,
+            "Description" : "Increment integer to rotate key in CloudFormation"
+        },
+        "MasterAccountAdminUserAccessKeyStatus" : {
+            "Type" : "String",
+            "AllowedValues" : ["Inactive", "Active"],
+            "Default" : "Inactive",
+            "Description" : "Set to active to use access key"
+        },
+        "DockerHubUsername" : {
+            "Type" : "String",
+            "Description" : "DockerHub username needed to reliable access registry for later stages"
+        },
+        "DockerHubPassword" : {
+            "Type" : "String",
+            "Description" : "DockerHub username needed to reliable access registry for later stages"
+        }
+    },
+    "Conditions" : {
+        "IsMasterAccountAdminGroupPathEmpty" : {
+            "Fn::Equals" : [ { "Ref" : "MasterAccountAdminGroupPath" }, "" ]
+        },
+        "IsMasterAccountAdminUserPathEmpty" : {
+            "Fn::Equals" : [ { "Ref" : "MasterAccountAdminUserPath" }, "" ]
+        }
+    },
+    "Resources" : {
+        "TerraformStateBucket" : {
+            "Type" : "AWS::S3::Bucket",
+            "Properties" : {
+                "BucketName" : "main-org-infra-tf-state",
+                "VersioningConfiguration" : {
+                    "Status" : "Enabled"
+                }
+            }
+        },
+        "DockerHubCredentials" : {
+            "Type" : "AWS::SecretsManager::Secret",
+            "Properties" : {
+                "Description" : "Dockerhub credentials needed to access registry in 01_bootstrap stage",
+                "Name" : { "Fn::Sub" : [ "/master/docker/${username}", { "username" : { "Ref" : "MasterAccountAdminUserName" } } ] },
+                "SecretString" : "{ \"Username\" : \"<username>\", \"Password\" : \"<password>\" }}",
+                "Tags" : [ 
+                    { "Key" : "user", "Value" : { "Ref" : "MasterAccountAdminUserName" } } 
+                ]
+            }
+        },
+        "MasterAccountAdminGroup" : {
+            "Type" : "AWS::IAM::Group",
+            "Properties" : {
+                "GroupName" : { "Ref" : "MasterAccountAdminGroupName" },
+                "ManagedPolicyArns" : [ "arn:aws:iam::aws:policy/AdministratorAccess" ],
+                "Path" : {
+                    "Fn::If" : [
+                        "IsMasterAccountAdminGroupPathEmpty",
+                        { "Ref" : "AWS::NoValue" },
+                        { "Ref" : "MasterAccountAdminGroupPath" }
+                    ] 
+                }
+            }
+        },
+        "MasterAccountAdminUserInitialPassword" : {
+            "Type" : "AWS::SecretsManager::Secret",
+            "Properties" : {
+                "Description" : "Auto-generated password for admin user",
+                "GenerateSecretString" : {
+                    "IncludeSpace" : false,
+                    "PasswordLength" : 12,
+                    "RequireEachIncludedType" : true
+                },
+                "Name" : { "Fn::Sub" : [ "/master/initpass/${username}", { "username" : { "Ref" : "MasterAccountAdminUserName" } } ] },
+                "Tags" : [ 
+                    { "Key" : "initial-password", "Value" : "true" },
+                    { "Key" : "user", "Value" : { "Ref" : "MasterAccountAdminUserName" } } 
+                ]
+            }
+        },
+        "MasterAccountAdminUser" : {
+            "Type" : "AWS::IAM::User",
+            "Properties" : {
+                "Groups" : [ { "Ref" : "MasterAccountAdminGroup" } ],
+                "LoginProfile" : {
+                    "Password" : { "Fn::Sub" : "{{resolve:secretsmanager:${MasterAccountAdminUserInitialPassword}}}" },
+                    "PasswordResetRequired" : true
+                },
+                "Path" : {
+                    "Fn::If" : [
+                        "IsMasterAccountAdminUserPathEmpty",
+                        { "Ref" : "AWS::NoValue" },
+                        { "Ref" : "MasterAccountAdminUserPath" }
+                    ] 
+                },
+                "UserName" : { "Ref" : "MasterAccountAdminUserName" }
+            }
+        },
+        "MasterAccountAdminUserAccessKey" : {
+            "Type" : "AWS::IAM::AccessKey",
+            "Properties" : {
+                "Serial" : { "Ref" : "MasterAccountAdminUserAccessKeySerial" },
+                "Status" : { "Ref" : "MasterAccountAdminUserAccessKeyStatus" },
+                "UserName" : { "Ref" : "MasterAccountAdminUser" }
+            }
+        },
+        "SaveMasterAccountAdminUserAccessKeyId" : {
+            "Type" : "AWS::SecretsManager::Secret",
+            "Properties" : {
+                "Description" : "Admin user's AccessKeyId",
+                "Name" : { "Fn::Sub" : [ "/master/access-keys/${username}", { "username" : { "Ref" : "MasterAccountAdminUserName" } } ] },
+                "SecretString" : { "Ref" : "MasterAccountAdminUserAccessKey" },
+                "Tags" : [ 
+                    { "Key" : "access-key-id", "Value" : "true" },
+                    { "Key" : "user", "Value" : { "Ref" : "MasterAccountAdminUserName" } } 
+                ]
+            }
+        },
+        "SaveMasterAccountAdminUserSecretAccessKey" : {
+            "Type" : "AWS::SecretsManager::Secret",
+            "Properties" : {
+                "Description" : "Admin user's SecretAccessKey",
+                "Name" : { "Fn::Sub" : [ "/master/secret-keys/${username}", { "username" : { "Ref" : "MasterAccountAdminUserName" } } ] },
+                "SecretString" : { "Fn::GetAtt" : [ "MasterAccountAdminUserAccessKey", "SecretAccessKey" ] },
+                "Tags" : [ 
+                    { "Key" : "access-key-id", "Value" : "true" },
+                    { "Key" : "user", "Value" : { "Ref" : "MasterAccountAdminUserName" } } 
+                ]
+            }
+        }
+    },
+    "Outputs" : {
+        "DockerHubCredentialsArn" : {
+            "Value" : { "Ref" : "DockerHubCredentials" },
+            "Description" : ""
+        }
+    }
+}
