@@ -59,7 +59,7 @@ data "aws_iam_policy_document" "codepipeline_service_role_policy" {
             "codebuild:StartBuild"
         ]
 
-        resources = ["${var.codebuild_plan_project_arn}, ${var.codebuild_apply_project_arn}"]
+        resources = ["${var.codebuild_plan_project_arn}", "${var.codebuild_apply_project_arn}"]
 
         effect = "Allow"
     }
