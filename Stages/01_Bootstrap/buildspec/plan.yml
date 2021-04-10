@@ -2,11 +2,9 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - cd Stages/02_Infra
-      - terraform init
-      - terraform validate
+      - cd $CODEBUILD_SRC_DIR/Stages/02_Infra/ && terraform init
+      - cd $CODEBUILD_SRC_DIR/Stages/02_Infra/ && terraform validate
   
   build:
     commands:
-      - cd Stages/02_Infra
-      - terraform plan
+      - cd $CODEBUILD_SRC_DIR/Stages/02_Infra/ && terraform plan
