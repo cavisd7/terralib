@@ -14,7 +14,7 @@ module "root_account_baseline" {
  */
 
 module "log_account_baseline" {
-    source                                          = "./LogAccountBaseline"
+    source                                          = "./LogsAccountBaseline"
 
     log_acc_roles                                   = var.log_acc_roles
     org_trail_bucket_id                             = module.root_account_baseline.org_trail_bucket_id
@@ -26,24 +26,24 @@ module "log_account_baseline" {
  * Identity Account Baseline
  */
 
-module "identity_account_baseline" {
+/*module "identity_account_baseline" {
     source                                          = "./IdentityAccountBaseline"
 
     sec_acc_id                                      = module.root_account_baseline.sec_acc_id
     org_trail_bucket_id                             = module.root_account_baseline.org_trail_bucket_id
     groups                                          = var.iam_groups
     users                                           = var.iam_users
-}
+}*/
 
 /*
  * Shared Services Account Baseline
  */
 
-module "shared_account_baseline" {
+/*module "shared_account_baseline" {
     source                                          = "./SharedServicesAccountBaseline"
 
     sec_acc_id                                      = module.root_account_baseline.sec_acc_id
     org_trail_bucket_id                             = module.root_account_baseline.org_trail_bucket_id
     shared_acc_id                                   = module.root_account_baseline.shared_acc_id
     shared_acc_roles                                = var.shared_acc_roles
-}
+}*/

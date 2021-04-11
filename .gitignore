@@ -1,5 +1,8 @@
 /*/**/.terraform
 /*/**/terraform.tfvars
 /*/**/.terraform.lock.hcl
+/*/**/*.tfvars
+
+Stages/02_Infra/provider.tf
 
 notes

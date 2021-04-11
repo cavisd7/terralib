@@ -32,6 +32,16 @@ resource "aws_s3_bucket" "codebuild_logs_bucket" {
 }
 
 /*
+ * .tfvars Bucket
+ */
+
+resource "aws_s3_bucket" "tfvars_bucket" {
+    bucket              = "main-org-infra-tfvars"
+
+    force_destroy       = true
+}
+
+/*
  * Terraform plan CodeBuild Project 
  */
 
@@ -82,6 +92,16 @@ resource "aws_codebuild_project" "plan_org_infra_project" {
             credential          = var.docker_credentials
             credential_provider = "SECRETS_MANAGER"
         }
+
+        environment_variable {
+            name  = "TFVARS_BUCKET_NAME"
+            value = aws_s3_bucket.tfvars_bucket.id
+        }
+
+        environment_variable {
+            name  = "INFRA_STAGE_PREFIX"
+            value = "stages/02_infra"
+        }
     }
 
     source {
@@ -124,6 +144,16 @@ resource "aws_codebuild_project" "apply_org_infra_project" {
         registry_credential {
             credential          = var.docker_credentials
             credential_provider = "SECRETS_MANAGER"
+        }
+
+        environment_variable {
+            name  = "TFVARS_BUCKET_NAME"
+            value = aws_s3_bucket.tfvars_bucket.id
+        }
+
+        environment_variable {
+            name  = "INFRA_STAGE_PREFIX"
+            value = "stages/02_infra"
         }
     }
 

@@ -4,5 +4,7 @@ terraform {
         encrypt = true 
         key = "stages/infra/terraform.tfstate"
         region = "us-east-2"
+
+        //profile = ""
     }
 }

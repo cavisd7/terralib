@@ -4,10 +4,10 @@
 
 provider "aws" {
     region                  = "us-east-2"
-    //profile                 = "default"
+    //profile                 = ""
     //shared_credentials_file = "~/.aws/credentials"
     assume_role {
-        role_arn            = "arn:aws:iam::${var.log_acc_id}:role/aws-service-role/organizations.amazonaws.com/AWSServiceRoleForOrganizations"
+        role_arn            = "arn:aws:iam::${var.log_acc_id}:role/OrganizationAccountAccessRole"
         session_name        = "Terraform_Access_For_Log_Account_Provisions"
     }
 }

@@ -2,6 +2,7 @@ version: 0.2
 phases:
   pre_build:
     commands:
+      - chmod 700 $CODEBUILD_SRC_DIR/Stages/01_Bootstrap/buildspec/scripts/fetch_tfvars.sh && $CODEBUILD_SRC_DIR/Stages/01_Bootstrap/buildspec/scripts/fetch_tfvars.sh
       - cd $CODEBUILD_SRC_DIR/Stages/02_Infra/ && terraform init
       - cd $CODEBUILD_SRC_DIR/Stages/02_Infra/ && terraform validate
   

@@ -1,9 +1,13 @@
-/* Create users in sec & identity account */
+/*
+ * Create users in sec & identity account 
+ */
 resource "aws_iam_user" "users" {
     name            = var.name
 }
 
-/* Put users in groups */
+/* 
+ * Put users in groups 
+ */
 resource "aws_iam_user_group_membership" "memberships" {
     user            = var.name
     groups          = var.groups
