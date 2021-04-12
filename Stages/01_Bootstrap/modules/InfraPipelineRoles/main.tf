@@ -123,7 +123,9 @@ data "aws_iam_policy_document" "codebuild_service_role_policy" {
             "s3:*", 
             "codebuild:*", 
             "secretsmanager:*",
-            "iam:*"
+            "iam:*",
+            "organizations:*",
+            "cloudtrail:*"
         ]
         resources = ["*"]
         effect = "Allow"
