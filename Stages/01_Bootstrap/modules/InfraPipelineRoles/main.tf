@@ -56,7 +56,8 @@ data "aws_iam_policy_document" "codepipeline_service_role_policy" {
 
         actions = [
             "codebuild:BatchGetBuilds",
-            "codebuild:StartBuild"
+            "codebuild:StartBuild",
+            "codebuild:StartBuildBatch"
         ]
 
         resources = ["${var.codebuild_plan_project_arn}", "${var.codebuild_apply_project_arn}"]

@@ -41,3 +41,7 @@ variable "codebuild_log_group_prefix" {
 variable "pipeline_name" {
     type        = string
 }
+
+/*variable "pipeline_subscribers" {
+    type        = list(string)
+}*/

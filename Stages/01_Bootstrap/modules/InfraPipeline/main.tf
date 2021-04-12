@@ -39,6 +39,10 @@ resource "aws_s3_bucket" "tfvars_bucket" {
     bucket              = "main-org-infra-tfvars"
 
     force_destroy       = true
+
+    versioning {
+        enabled = true
+    }
 }
 
 /*
@@ -69,6 +73,22 @@ resource "aws_codestarconnections_connection" "github_connection" {
 }
 
 /*
+ * Pipeline SNS Topic
+ */
+
+/*resource "aws_sns_topic" "pipeline_approval_topic" {
+    name                = "org-infra-pipeline"
+}
+
+resource "aws_sns_topic_subscription" "user_updates_sqs_target" {
+    count               = length(var.pipeline_subscribers)
+
+    topic_arn           = aws_sns_topic.pipeline_approval_topic.arn
+    protocol            = "email"
+    endpoint            = var.pipeline_subscribers[count.index]
+}*/
+
+/*
  * CodeBuild project used as the terraform plan stage in the pipeline
  */
 
@@ -89,18 +109,18 @@ resource "aws_codebuild_project" "plan_org_infra_project" {
         image_pull_credentials_type = "SERVICE_ROLE"
 
         registry_credential {
-            credential          = var.docker_credentials
-            credential_provider = "SECRETS_MANAGER"
+            credential              = var.docker_credentials
+            credential_provider     = "SECRETS_MANAGER"
         }
 
         environment_variable {
-            name  = "TFVARS_BUCKET_NAME"
-            value = aws_s3_bucket.tfvars_bucket.id
+            name    = "TFVARS_BUCKET_NAME"
+            value   = aws_s3_bucket.tfvars_bucket.id
         }
 
         environment_variable {
-            name  = "INFRA_STAGE_PREFIX"
-            value = "stages/02_infra"
+            name    = "INFRA_STAGE_PREFIX"
+            value   = "stages/02_infra"
         }
     }
 
@@ -142,25 +162,25 @@ resource "aws_codebuild_project" "apply_org_infra_project" {
         image_pull_credentials_type = "SERVICE_ROLE"
 
         registry_credential {
-            credential          = var.docker_credentials
-            credential_provider = "SECRETS_MANAGER"
+            credential              = var.docker_credentials
+            credential_provider     = "SECRETS_MANAGER"
         }
 
         environment_variable {
-            name  = "TFVARS_BUCKET_NAME"
-            value = aws_s3_bucket.tfvars_bucket.id
+            name    = "TFVARS_BUCKET_NAME"
+            value   = aws_s3_bucket.tfvars_bucket.id
         }
 
         environment_variable {
-            name  = "INFRA_STAGE_PREFIX"
-            value = "stages/02_infra"
+            name    = "INFRA_STAGE_PREFIX"
+            value   = "stages/02_infra"
         }
     }
 
     source {
-        type            = "CODEPIPELINE"
-        buildspec       = file("buildspec/apply.yml")
-    } 
+        type                = "CODEPIPELINE"
+        buildspec           = file("buildspec/apply.yml")
+    }
 
     logs_config {
         cloudwatch_logs {
@@ -189,20 +209,33 @@ resource "aws_codepipeline" "org_infra_codepipeline" {
     }
 
     stage {
-        name = "Source"
+        name            = "Source"
 
-         action{
-            name = "Source"
-            category = "Source"
-            owner = "AWS"
-            provider = "CodeStarSourceConnection"
-            version = "1"
-            output_artifacts = ["tf-code"]
+        action {
+            name                = "Source"
+            category            = "Source"
+            owner               = "AWS"
+            provider            = "CodeStarSourceConnection"
+            version             = "1"
+            output_artifacts    = ["tfcode"]
             configuration = {
-                FullRepositoryId = var.full_repo_id
-                BranchName   = var.branch_name
-                ConnectionArn = aws_codestarconnections_connection.github_connection.arn
-                OutputArtifactFormat = "CODE_ZIP"
+                FullRepositoryId        = var.full_repo_id
+                BranchName              = var.branch_name
+                ConnectionArn           = aws_codestarconnections_connection.github_connection.arn
+                OutputArtifactFormat    = "CODE_ZIP"
+            }
+        }
+
+        action{
+            name                = "Source2"
+            category            = "Source"
+            owner               = "AWS"
+            provider            = "S3"
+            version             = "1"
+            output_artifacts    = ["tfvars"]
+            configuration = {
+                S3Bucket        = "main-org-infra-tfvars"
+                S3ObjectKey     = "stages/02_infra/infra_tfvars.zip"
             }
         }
     }
@@ -211,18 +244,35 @@ resource "aws_codepipeline" "org_infra_codepipeline" {
         name = "Plan"
 
         action {
-            name            = "Build"
-            category        = "Build"
-            owner           = "AWS"
-            provider        = "CodeBuild"
-            input_artifacts = ["tf-code"]
-            version         = "1"
+            name                = "Build"
+            category            = "Build"
+            owner               = "AWS"
+            provider            = "CodeBuild"
+            input_artifacts     = ["tfcode", "tfvars"]
+            version             = "1"
 
             configuration = {
                 ProjectName     = aws_codebuild_project.plan_org_infra_project.id
+                PrimarySource   = "tfcode"
             }
         }
     }
+
+    stage {
+        name = "Approval"
+
+        action {
+            category    = "Approval"
+            owner       = "AWS"
+            name        = "Approval"
+            provider    = "Manual"
+            version     = "1"
+        }
+
+        /*configuration = {
+            NotificationArn = aws_sns_topic.pipeline_approval_topic.arn
+        }*/
+    } 
 
     stage {
         name = "Apply"
@@ -232,11 +282,12 @@ resource "aws_codepipeline" "org_infra_codepipeline" {
             category        = "Build"
             owner           = "AWS"
             provider        = "CodeBuild"
-            input_artifacts = ["tf-code"]
+            input_artifacts = ["tfcode", "tfvars"]
             version         = "1"
 
             configuration = {
                 ProjectName     = aws_codebuild_project.apply_org_infra_project.id
+                PrimarySource   = "tfcode"
             }
         }
     }
