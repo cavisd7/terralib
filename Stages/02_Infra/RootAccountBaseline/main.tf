@@ -41,7 +41,8 @@ module "org_trail" {
     /* TODO: For now the account designated for storing all CloudTrail logs must be named "logs" */
     log_acc_id              = data.aws_organizations_organization.org_accounts.non_master_accounts[index(data.aws_organizations_organization.org_accounts.non_master_accounts.*.name, "logs")].id
     org_trail_bucket_name   = var.org_trail_bucket_name
-    child_accs_ids          = aws_organizations_account.child_accs.*.id
+    //child_accs_ids          = aws_organizations_account.child_accs.*.id
+    child_accs_ids          = data.aws_organizations_organization.accounts.*.id
 }
 
 /* 
