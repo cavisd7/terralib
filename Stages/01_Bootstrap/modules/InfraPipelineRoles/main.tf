@@ -131,11 +131,11 @@ data "aws_iam_policy_document" "codebuild_service_role_policy" {
         effect = "Allow"
     }
 
-    /*statement {
+    statement {
         effect = "Allow"
         actions = [ "sts:AssumeRole" ]
-        resources = [ "arn:aws:iam::${}:role/RoleB" ]
-    }*/
+        resources = [ "arn:aws:iam::*:role/OrganizationAccountAccessRole" ]
+    }
 }
 
 /*

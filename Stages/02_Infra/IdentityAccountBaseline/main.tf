@@ -20,8 +20,10 @@ module "create_sec_users" {
 /* 
  * Turn on CloudTrail on sec & identity account and deliver to s3 bucket in logs account 
  */
- 
-resource "aws_cloudtrail" "sec_trail" {
-    name                    = "sec-trail"
-    s3_bucket_name          = var.org_trail_bucket_id
+
+module "sec_trail" {
+    source                  = "../global-modules/EnableAccountCloudTrail"
+
+    trail_name              = "sec-trail"
+    dest_bucket_name        = var.org_trail_bucket_id
 }

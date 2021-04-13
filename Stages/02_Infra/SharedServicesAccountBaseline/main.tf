@@ -1,7 +1,10 @@
 /* Turn on CloudTrail in shared account */
-resource "aws_cloudtrail" "shared-acc-trail" {
-    name                    = "shared-acc-trail"
-    s3_bucket_name          = var.org_trail_bucket_id
+
+module "shared_acc_trail" {
+    source                  = "../global-modules/EnableAccountCloudTrail"
+
+    trail_name              = "shared-acc-trail"
+    dest_bucket_name        = var.org_trail_bucket_id
 }
 
 /* Allow users kept in the security & identity account to assume roles in the shared account */

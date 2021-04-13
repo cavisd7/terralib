@@ -20,7 +20,7 @@ module "org_pipeline_roles" {
 
 module "org_infra_pipeline" {
     source                          = "./modules/InfraPipeline"
-
+    
     pipeline_name                   = var.pipeline_name
     pipeline_bucket_name            = local.pipeline_bucket_name
     codebuild_bucket_name           = local.codebuild_bucket_name
@@ -31,4 +31,5 @@ module "org_infra_pipeline" {
     container_image                 = var.container_image
     full_repo_id                    = var.full_repo_id
     branch_name                     = var.branch_name
+    initial_iam_user_name           = var.initial_iam_user_name
 }

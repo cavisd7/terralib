@@ -13,3 +13,7 @@ variable "log_acc_id" {
 variable "sec_acc_id" {
     type = string 
 }
+
+variable "acc_ids" {
+    type = list(string)
+}

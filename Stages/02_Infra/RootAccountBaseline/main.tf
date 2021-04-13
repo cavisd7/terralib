@@ -3,12 +3,9 @@
  */
 
 resource "aws_organizations_organization" "org" {
-    feature_set             = "ALL"
+    feature_set                     = "ALL"
 
-    aws_service_access_principals = [
-        "cloudtrail.amazonaws.com",
-        "config.amazonaws.com",
-    ]
+    aws_service_access_principals   = var.org_service_access_principals
 }
 
 /* 
@@ -48,8 +45,17 @@ module "org_trail" {
 /* 
  * Turn on CloudTrail on root account and deliver to s3 bucket in logs account 
  */
- 
-resource "aws_cloudtrail" "root_trail" {
-    name                    = "root-trail"
-    s3_bucket_name          = module.org_trail.org_trail_bucket_id
+
+module "root_trail" {
+    source                      = "../global-modules/EnableAccountCloudTrail"
+
+    trail_name                  = "root-acc-trail"
+    dest_bucket_name            = module.org_trail.org_trail_bucket_id
+    org_trail_kms_key_id        = var.org_cloudtrail_key_arn
 }
+
+/*module "import_initial_iam_user" {
+    source                      = "./modules/InitialIAMUser"
+
+    initial_user_name           = var.initial_iam_user_name
+}*/

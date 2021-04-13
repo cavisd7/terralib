@@ -1,6 +1,10 @@
 variable "aws_profile_name" {
-    type = string
-    default = "default"
+    type        = string
+    default     = "default"
+}
+
+variable "initial_iam_user_name" {
+    type        = string
 }
 
 variable "container_image" {
@@ -9,18 +13,18 @@ variable "container_image" {
 }
 
 variable "full_repo_id" {
-    type = string
+    type        = string
 }
 
 variable "branch_name" {
-    type = string
+    type        = string
 }
 
 variable "pipeline_name" {
-    type = string 
-    default = "org-infra"
+    type        = string 
+    default     = "org-infra"
 }
 
 variable "docker_credentials" {
-    type = string 
+    type        = string 
 }

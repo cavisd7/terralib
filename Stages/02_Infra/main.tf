@@ -6,7 +6,10 @@ module "root_account_baseline" {
     source                                          = "./RootAccountBaseline"
 
     child_accounts                                  = var.child_accounts
+    initial_iam_user_name                           = var.initial_iam_user_name
     org_trail_bucket_name                           = var.org_trail_bucket_name
+
+    org_cloudtrail_key_arn                          = module.log_account_baseline.org_cloudtrail_key_arn
 }
 
 /*
@@ -20,6 +23,8 @@ module "log_account_baseline" {
     org_trail_bucket_id                             = module.root_account_baseline.org_trail_bucket_id
     log_acc_id                                      = module.root_account_baseline.log_acc_id
     sec_acc_id                                      = module.root_account_baseline.sec_acc_id
+
+    acc_ids                                         = module.root_account_baseline.org_accounts.*.id
 }
 
 /*
@@ -33,6 +38,8 @@ module "log_account_baseline" {
     org_trail_bucket_id                             = module.root_account_baseline.org_trail_bucket_id
     groups                                          = var.iam_groups
     users                                           = var.iam_users
+
+    org_cloudtrail_key_arn                          = module.log_account_baseline.org_cloudtrail_key_arn
 }*/
 
 /*
