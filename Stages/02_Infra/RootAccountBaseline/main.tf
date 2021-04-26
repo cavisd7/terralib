@@ -54,6 +54,17 @@ module "root_trail" {
     org_trail_kms_key_id        = var.org_cloudtrail_key_arn
 }
 
+
+resource "aws_s3_bucket" "b" {
+  bucket = "my-tf-test-bucket-very-cool-original-name"
+  acl    = "private"
+
+  tags = {
+    Name        = "My bucket"
+    Environment = "Dev"
+  }
+}
+
 /*module "import_initial_iam_user" {
     source                      = "./modules/InitialIAMUser"
 
