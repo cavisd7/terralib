@@ -3,9 +3,9 @@ variable "aws_profile_name" {
     default     = "default"
 }
 
-variable "initial_iam_user_name" {
-    type        = string
-}
+#variable "initial_iam_user_name" {
+#    type        = string
+#}
 
 variable "container_image" {
     type        = string

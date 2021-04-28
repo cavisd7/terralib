@@ -42,9 +42,9 @@ variable "pipeline_name" {
     type        = string
 }
 
-variable "initial_iam_user_name" {
-    type        = string
-}
+#variable "initial_iam_user_name" {
+#    type        = string
+#}
 
 /*variable "pipeline_subscribers" {
     type        = list(string)

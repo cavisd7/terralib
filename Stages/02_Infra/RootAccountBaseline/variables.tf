@@ -18,6 +18,6 @@ variable "org_cloudtrail_key_arn" {
     type        = string
 }
 
-variable "initial_iam_user_name" {
-    type        = string
-}
+#variable "initial_iam_user_name" {
+#    type        = string
+#}

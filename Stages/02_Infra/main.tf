@@ -6,7 +6,7 @@ module "root_account_baseline" {
     source                                          = "./RootAccountBaseline"
 
     child_accounts                                  = var.child_accounts
-    initial_iam_user_name                           = var.initial_iam_user_name
+    #initial_iam_user_name                           = var.initial_iam_user_name
     org_trail_bucket_name                           = var.org_trail_bucket_name
 
     org_cloudtrail_key_arn                          = module.log_account_baseline.org_cloudtrail_key_arn
@@ -53,4 +53,11 @@ module "log_account_baseline" {
     org_trail_bucket_id                             = module.root_account_baseline.org_trail_bucket_id
     shared_acc_id                                   = module.root_account_baseline.shared_acc_id
     shared_acc_roles                                = var.shared_acc_roles
+}*/
+
+
+/*module "dev_account_baseline" {
+    source                                          = "./DevAccountBaseline"
+
+    org_trail_bucket_id                             = module.root_account_baseline.org_trail_bucket_id
 }*/

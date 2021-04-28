@@ -31,5 +31,5 @@ module "org_infra_pipeline" {
     container_image                 = var.container_image
     full_repo_id                    = var.full_repo_id
     branch_name                     = var.branch_name
-    initial_iam_user_name           = var.initial_iam_user_name
+    #initial_iam_user_name           = var.initial_iam_user_name
 }
