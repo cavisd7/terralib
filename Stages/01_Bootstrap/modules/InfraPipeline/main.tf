@@ -123,10 +123,10 @@ resource "aws_codebuild_project" "plan_org_infra_project" {
             value   = "stages/02_infra"
         }
 
-        environment_variable {
-            name    = "INITIAL_IAM_USER_NAME"
-            value   = var.initial_iam_user_name
-        }
+        #environment_variable {
+        #    name    = "INITIAL_IAM_USER_NAME"
+        #    value   = var.initial_iam_user_name
+        #}
     }
 
     source {
@@ -181,10 +181,10 @@ resource "aws_codebuild_project" "apply_org_infra_project" {
             value   = "stages/02_infra"
         }
 
-        environment_variable {
-            name    = "INITIAL_IAM_USER_NAME"
-            value   = var.initial_iam_user_name
-        }
+        #environment_variable {
+        #    name    = "INITIAL_IAM_USER_NAME"
+        #    value   = var.initial_iam_user_name
+        #}
     }
 
     source {
