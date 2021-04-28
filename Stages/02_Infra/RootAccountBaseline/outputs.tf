@@ -19,6 +19,6 @@ output "shared_acc_id" {
     value = data.aws_organizations_organization.org_accounts.non_master_accounts[index(data.aws_organizations_organization.org_accounts.non_master_accounts.*.name, "shared")].id
 }
 
-output "account_ids_map" {
+/*output "account_ids_map" {
     value = local.account_ids_map
-}
+}*/
