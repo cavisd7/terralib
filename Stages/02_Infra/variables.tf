@@ -20,6 +20,10 @@ variable "iam_groups" {
     })) 
 }
 
+variable "initial_iam_user_name" {
+    type = string
+}
+
 variable "iam_users" {
     type = list(object({
         name            = string
