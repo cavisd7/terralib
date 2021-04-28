@@ -1,11 +1,11 @@
-locals {
+/*locals {
     account_names = var.child_accounts[*].name
 
     account_ids_map = {
         for acc in local.account_names : 
             acc => data.aws_organizations_organization.org_accounts.non_master_accounts[index(data.aws_organizations_organization.org_accounts.non_master_accounts.*.name, acc)].id   
     }
-}
+}*/
 
 /* 
  * Create Organization 
