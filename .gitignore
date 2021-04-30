@@ -2,6 +2,8 @@
 /*/**/terraform.tfvars
 /*/**/.terraform.lock.hcl
 /*/**/*.tfvars
+/*/**/*.tfstate
+/*/**/*.tfstate.backup
 
 Stages/02_Infra/provider.tf
 
