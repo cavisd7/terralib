@@ -14,3 +14,20 @@ module "dev_vpc" {
     cidr_block              = var.cidr_block 
     eks_cluster_name        = var.eks_cluster_name
 }
+
+module "eks_cluster" {
+    source              = "../global-modules/EKSCluster"
+
+    eks_cluster_name    = var.eks_cluster_name
+    vpc_id              = module.dev_vpc.vpc_id
+    subnet_ids          = module.dev_vpc.private_subnet_ids
+}
+
+module "eks_node_group" {
+    source              = "../global-modules/EKSWorkerNode"
+
+    cluster_name        = var.eks_cluster_name
+    node_group_name     = var.eks_node_group_name
+    vpc_id              = module.dev_vpc.vpc_id
+    subnet_ids          = module.dev_vpc.private_subnet_ids
+}

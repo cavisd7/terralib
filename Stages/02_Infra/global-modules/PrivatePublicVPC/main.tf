@@ -15,11 +15,3 @@ module "private_public_subnets" {
     vpc_cidr_block      = var.cidr_block
     eks_cluster_name    = var.eks_cluster_name
 }
-
-module "eks_cluster" {
-    source              = "./modules/EKSCluster"
-
-    eks_cluster_name    = var.eks_cluster_name
-    vpc_id              = aws_vpc.vpc.id
-    subnet_ids          = module.private_public_subnets.private_subnet_ids
-}
